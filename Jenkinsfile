@@ -38,7 +38,7 @@ pipeline {
                 sh './bob-packager.py -s= ${STAGE_NAME}'
             }
         }
-        stage('build') {
+        stage('package') {
             steps {
                 echo '${STAGE_NAME}...'
                 sh './bob-packager.py -s= ${STAGE_NAME}'
