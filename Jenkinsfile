@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                ./bob-packager.py
+                sh './bob-packager.py'
             }
         }
         stage('Test') {
