@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
+                ./bob-packager.py
             }
         }
         stage('Test') {
