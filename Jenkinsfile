@@ -2,16 +2,46 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('reset') {
             steps {
-                echo 'Checkout..'
-                sh './bob-packager.py -s checkout'
+                echo '${STAGE_NAME}...'
+                sh './bob-packager.py -s= ${STAGE_NAME}'
             }
         }
-        stage('Reset') {
+        stage('exists') {
             steps {
-                echo 'Reset..'
-                sh './bob-packager.py -s reset'
+                echo '${STAGE_NAME}...'
+                sh './bob-packager.py -s= ${STAGE_NAME}'
+            }
+        }
+        stage('checkout') {
+            steps {
+                echo '${STAGE_NAME}...'
+                sh './bob-packager.py -s= ${STAGE_NAME}'
+            }
+        }
+        stage('prepare') {
+            steps {
+                echo '${STAGE_NAME}...'
+                sh './bob-packager.py -s= ${STAGE_NAME}'
+            }
+        }
+        stage('clean') {
+            steps {
+                echo '${STAGE_NAME}...'
+                sh './bob-packager.py -s= ${STAGE_NAME}'
+            }
+        }
+        stage('build') {
+            steps {
+                echo '${STAGE_NAME}...'
+                sh './bob-packager.py -s= ${STAGE_NAME}'
+            }
+        }
+        stage('build') {
+            steps {
+                echo '${STAGE_NAME}...'
+                sh './bob-packager.py -s= ${STAGE_NAME}'
             }
         }
     }
