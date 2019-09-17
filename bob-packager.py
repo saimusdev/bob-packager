@@ -4,13 +4,14 @@ import argparse        # To parse command line arguments
 ARGS = None
 
 def main():
-    print "Hello World!"
+    global ARGS
     ARGS = parse_command_line_arguments()
     execute()
 
 def parse_command_line_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s", "--step", required=False, action="store_true", help="Pipeline step to execute")
+    parser.add_argument('-s', type=str, dest='step',
+        choices=['checkout', 'reset'], required=False, action='store', help="Pipeline step to execute")
     return parser.parse_args()
 
 def execute():
@@ -19,6 +20,8 @@ def execute():
             checkout_revision()
         elif ARGS.step == "reset":
             reset_repository()
+    else:
+        print "ARGS is None"
 
 def checkout_revision():
     print "CHECKOUT"
