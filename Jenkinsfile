@@ -2,19 +2,16 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                sh './bob-packager.py'
+                echo 'Checkout..'
+                sh './bob-packager.py -s checkout'
             }
         }
-        stage('Test') {
+        stage('Reset') {
             steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
+                echo 'Reset..'
+                sh './bob-packager.py -s reset'
             }
         }
     }
