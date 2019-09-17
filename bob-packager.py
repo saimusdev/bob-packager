@@ -75,7 +75,7 @@ def clean():
     pass
 
 @step
-def make():
+def build():
     pass
 
 @step
