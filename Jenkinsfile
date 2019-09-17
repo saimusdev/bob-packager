@@ -5,13 +5,13 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checkout..'
-                sh './bob-packager.py -s=checkout'
+                sh './bob-packager.py -s checkout'
             }
         }
         stage('Reset') {
             steps {
                 echo 'Reset..'
-                sh './bob-packager.py -s=reset'
+                sh './bob-packager.py -s reset'
             }
         }
     }

@@ -3,6 +3,9 @@ import argparse        # To parse command line arguments
 
 ARGS = None
 
+PIPELINE_STEPS = []
+step = lambda f: PIPELINE_STEPS.append((f.__name__, f))
+
 def main():
     global ARGS
     ARGS = parse_command_line_arguments()
@@ -16,18 +19,33 @@ def parse_command_line_arguments():
 
 def execute():
     if ARGS is not None:
-        if ARGS.step == "checkout":
-            checkout_revision()
-        elif ARGS.step == "reset":
-            reset_repository()
+        if ARGS.step is not None:
+            if ARGS.step == "reset":
+                reset_repository()
+            elif ARGS.step == "exists":
+                check_revision_exists()
+            elif ARGS.step == "checkout":
+                checkout_revision()
+            elif ARGS.step == "":
+                reset_repository()
+        else:  # Execute whole pipeline
+            for step_name, execute_step in PIPELINE_STEPS:
+                print step_name
+                execute_step()
     else:
         print "ARGS is None"
 
-def checkout_revision():
-    print "CHECKOUT"
+@step
+def check_revision_exists():
+    pass
 
+@step
+def checkout_revision():
+    pass
+
+@step
 def reset_repository():
-    print "RESET"
+    pass
 
 if __name__ == "__main__":
     main()
