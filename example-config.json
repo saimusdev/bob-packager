@@ -1,0 +1,31 @@
+{
+  "repo": {
+    "name": "repo",
+    "remote": "https://github.com/tensorflow/tensorflow.git",
+    "revision": "v2.0.0-rc1"
+  },
+  "stages": {
+    "reset": {
+
+    },
+    "exists": {
+    
+    },
+    "checkout": {
+
+    },
+    "prepare": {
+
+    },
+    "clean": {
+
+    },
+    "build": {
+
+    },
+    "package": {
+
+    }
+  }
+}
+

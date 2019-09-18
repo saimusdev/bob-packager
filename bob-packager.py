@@ -1,84 +1,105 @@
 #!/usr/bin/env python
+import os              # To access filesystem
 import argparse        # To parse command line arguments
+import git             # For working with Git repos
+import json            # To parse JSON config file
 
 ARGS = None
+CONFIG_FILEPATH = 'example-config.json'
+CONFIG = None
 
-PIPELINE_STEPS = []
+PIPELINE_STAGES = []
 # Function decorator to append step to pipeline
-def step(s):
-    PIPELINE_STEPS.append((s.__name__, s)) # Executed at start time
-    def step_wrapper(): # Executed at runtime
+def stage(s):
+    PIPELINE_STAGES.append((s.__name__, s)) # Executed at start time
+    def stage_wrapper(): # Executed at runtime
         print s.__name__
         s()
-    return step_wrapper
+    return stage_wrapper
 
 def main():
-    global ARGS
+    global ARGS, CONFIG
     ARGS = parse_command_line_arguments()
-    execute()
+    CONFIG = parse_configuration_file()
+    if ARGS is not None and CONFIG is not None:
+        execute()
 
 def parse_command_line_arguments():
     parser = argparse.ArgumentParser()
-    possible_steps,_ = map(list,zip(*PIPELINE_STEPS))
+    possible_stages,_ = map(list,zip(*PIPELINE_STAGES))
+    parser.add_argument(
+        'CONFIG', 
+        type=str,
+        action='store',
+        help="Configuration file")
     parser.add_argument(
         '-s', 
         type=str,
-        dest='step',
-        choices=possible_steps,
+        dest='stage',
+        choices=possible_stages,
         required=False,
         action='store',
-        help="Pipeline step to execute")
+        help="Pipeline stage to execute")
     return parser.parse_args()
 
+def parse_configuration_file():
+    global CONFIG
+    with open(CONFIG_FILEPATH) as f:
+        return json.load(f)
+
 def execute():
-    if ARGS is not None:
-        if ARGS.step:
-            if ARGS.step == "reset":
-                reset()
-            elif ARGS.step == "exists":
-                exists()
-            elif ARGS.step == "checkout":
-                checkout()
-            elif ARGS.step == "prepare":
-                prepare()
-            elif ARGS.step == "clean":
-                clean()
-            elif ARGS.step == "build":
-                build()
-            elif ARGS.step == "package":
-                package()
-        else:  # Execute whole pipeline
-            for step_name, execute_step in PIPELINE_STEPS:
-                print step_name
-                execute_step()
+    if ARGS.stage is not None:
+        globals()[ARGS.stage]() # Call function with the same name
+    else:  # Execute whole pipeline
+        for stage_name, execute_stage in PIPELINE_STAGES:
+            print "--> stage: %s" % stage_name
+            execute_stage()
+
+@stage
+def clone():
+    remote_url = CONFIG['repo']['remote']
+    local_repo = CONFIG['repo']['name'] 
+    if not os.path.exists(local_repo):
+            repo = git.Repo.clone_from(
+                remote_url, 
+                local_repo,
+                branch='master',
+                progress=git.remote.RemoteProgress())
     else:
-        print "ARGS is None"
+        try:
+            _ = git.Repo(local_repo).git_dir
+            print "repo already cloned, skipping..."
+        except git.exc.InvalidGitRepositoryError:
+            print "Error: directory already exists with same name as repo"
 
-@step
+@stage
 def reset():
-    pass
+    try:
+        repo = git.Repo(CONFIG['repo']['name'])
+    except git.exc.NoSuchPathError:
+        print "Cannot reset inexistent repo" 
 
-@step
+@stage
 def exists():
     pass
 
-@step
+@stage
 def checkout():
     pass
 
-@step
+@stage
 def prepare():
     pass
 
-@step
+@stage
 def clean():
     pass
 
-@step
+@stage
 def build():
     pass
 
-@step
+@stage
 def package():
     pass
 
