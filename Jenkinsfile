@@ -6,7 +6,11 @@ pipeline {
         return_code = 0
         stage('clone') {
             steps {
-                return_code = sh ( script: "${script}, args: ["-s", ${STAGE_NAME}], returnStatus: true)
+                return_code = sh ( 
+                  script: "${script}",
+                  args: ["-s", "${STAGE_NAME}"],
+                  returnStatus: true,
+                  returnStdout: true)
             }
         }
         stage('reset') {
